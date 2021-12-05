@@ -22,6 +22,8 @@ public interface PostRepo extends JpaRepository<Post, Long> {
 
     void delete(Post post);
 
+
+
     Collection<Post> findAllByOrderByCreationDateDesc();
 
 

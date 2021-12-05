@@ -1,5 +1,6 @@
 
 .tonal {
+    border-radius: 2% 2% 2% 2%;
     background-color: #008CBA;
     overflow: hidden;
 }
@@ -32,6 +33,7 @@
 }
 
 body {
+
     font-family: Arial;
     padding: 0;
     background: #f1f1f1;
@@ -49,11 +51,13 @@ body {
 }
 
 .container {
+
     /*width: 80%;*/
     margin: auto;
 }
 
 .posts_wrapper {
+
     width: 100%;
 }
 
@@ -70,6 +74,8 @@ body {
 }
 
 .post {
+    border-radius: 2% 2% 2% 2%;
+    border: double black;
     background-color: white;
     padding: 20px;
     margin-top: 20px;
@@ -97,6 +103,8 @@ body {
 }
 
 .comment {
+    border-radius: 2% 2% 2% 2%;
+    border: double black;
     position: relative;
     background-color: white;
     padding: 10px 20px;

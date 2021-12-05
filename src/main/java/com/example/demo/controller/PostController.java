@@ -61,9 +61,9 @@ public class PostController {
     @Secured("ROLE_USER")
     @PostMapping("/createNewPost")
     public String createNewPost(@Valid @ModelAttribute Post post, BindingResult bindingResult, Authentication authentication) {
-        System.err.println("POST post: " + post); // for testing debugging purposes
+        //System.err.println("POST post: " + post);
         if (bindingResult.hasErrors()) {
-            System.err.println("Post did not validate");
+           // System.err.println("Post did not validate");
             return "postForm";
         }
         User user = (User) authentication.getPrincipal();

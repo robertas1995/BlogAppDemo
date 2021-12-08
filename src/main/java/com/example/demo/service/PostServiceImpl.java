@@ -4,8 +4,10 @@ import com.example.demo.model.Post;
 import com.example.demo.model.User;
 import com.example.demo.repository.PostRepo;
 import lombok.AllArgsConstructor;
+import org.hibernate.action.internal.EntityActionVetoException;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.Optional;
@@ -15,6 +17,7 @@ import java.util.Optional;
 public class PostServiceImpl implements PostService {
 
     private final PostRepo postRepo;
+
 
     @Override
     public Optional<Post> getById(Long id) {
@@ -28,7 +31,12 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post save(Post post) {
-        return postRepo.saveAndFlush(post);
+        return postRepo.save(post);
+    }
+
+    @Override
+    public Optional<Post> edit(Long id) {
+        return Optional.empty();
     }
 
     @Override
@@ -72,5 +80,22 @@ public class PostServiceImpl implements PostService {
 
 
 
+
+    @Override
+    public void editPost(Long postId, String postTitle, String postBody) {
+        var post = postRepo.findById(postId).orElseThrow(()-> new EntityNotFoundException("Post not found"));
+        post.setTitle(postTitle);
+        post.setBody(postBody);
+        postRepo.save(post);
+    }
+
+
 }
+
+
+
+
+
+
+
 

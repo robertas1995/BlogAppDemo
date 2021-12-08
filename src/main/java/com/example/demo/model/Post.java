@@ -45,6 +45,18 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     private Collection<Comment> comments;
 
+    @Override
+    public String toString() {
+        return "Post{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", body='" + body + '\'' +
+                ", creationDate=" + creationDate +
+                ", user=" + user +
+                ", comments=" + comments +
+                '}';
+    }
+
 
 }
 

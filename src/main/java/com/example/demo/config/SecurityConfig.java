@@ -27,6 +27,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/createNewPost/**"
                         , "/editPost/**"
                         , "/comment/**"
+                        ,"/editComment/**"
                         , "/deletePost/**").hasAnyAuthority("USER")
                 .antMatchers("/register"
                         , "/home"

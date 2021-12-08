@@ -24,6 +24,11 @@
         <div class="comment" th:each="comment : ${post.comments}">
             <h5 th:text="'Commented on ' + ${#dates.format(post.creationDate, 'yyyy-MM-dd')} + ' by ' + ${comment.user.username}">Comment date and by whom</h5>
             <p th:text="${comment.body}">Body</p>
+               <div class="align-center" sec:authorize="isAuthenticated()">
+                   <a th:href="@{'/editComment/{commentId}'(id=${comment.id})}">
+                       <button class="blue-btn" type="button">Edit Comment</button>
+                   </a>
+               </div>
         </div>
     </div>
     <div class="align-center">

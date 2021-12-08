@@ -2,17 +2,16 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Post;
 import com.example.demo.model.User;
+import com.example.demo.repository.PostRepo;
 import com.example.demo.service.PostService;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.support.SessionStatus;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -23,11 +22,12 @@ public class PostController {
 
     private final PostService postService;
     private final UserService userService;
-
+    private final PostRepo postRepo;
     @Autowired
-    public PostController(PostService postService, UserService userService) {
+    public PostController(PostService postService, UserService userService, PostRepo postRepo) {
         this.postService = postService;
         this.userService = userService;
+        this.postRepo = postRepo;
     }
 
     @GetMapping("/post/{id}")
@@ -74,29 +74,23 @@ public class PostController {
     }
 
     @Secured("ROLE_USER")
-    @GetMapping("editPost/{id}")
-    public String editPost(@PathVariable Long id, Model model, Principal principal) {
-        String authUsername = "anonymousUser";
-        if (principal != null) {
-            authUsername = principal.getName();
-        }
-        Optional<Post> optionalPost = this.postService.getById(id);
-        if (optionalPost.isPresent()) {
-            Post post = optionalPost.get();
+    @GetMapping("/editPost/{postId}")
+    public String editPost(@PathVariable Long postId, Model model) {
+        model.addAttribute("postId",postId);
+        var post = postRepo.getById(postId);
+        model.addAttribute("editpost",post);
+        return "/editPost";
 
-            if (authUsername.equals(post.getUser().getUsername())) {
-                model.addAttribute("post", post);
-                //System.err.println("EDIT post: " + post);
-                return "postForm";
-            } else {
-                //System.err.println("Current User has no permissions to edit anything on post by id: " + id);
-                return "403";
-            }
-        } else {
-            //System.err.println("Could not find a post by id: " + id);
-            return "error";
-        }
     }
+
+    @PostMapping("/editPost/{postId}")
+    public String editPost(@PathVariable Long postId,@RequestParam(name = "postTitle") String postTitle, @RequestParam(name = "postBody") String postBody) {
+        postService.editPost(postId, postTitle, postBody);
+
+//        sessionStatus.setComplete();
+        return "redirect:/home";
+    }
+
 
     @Secured("ROLE_USER")
     @GetMapping("/deletePost/{id}")

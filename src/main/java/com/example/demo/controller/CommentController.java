@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.model.Comment;
 import com.example.demo.model.Post;
 import com.example.demo.model.User;
+import com.example.demo.repository.CommentRepo;
 import com.example.demo.service.CommentsService;
 import com.example.demo.service.PostService;
 import com.example.demo.service.UserService;
@@ -19,25 +20,24 @@ import java.security.Principal;
 import java.util.Optional;
 
 @Controller
-@SessionAttributes("comment")
 public class CommentController {
 
     private final PostService postService;
     private final UserService userService;
     private final CommentsService commentsService;
+    private final CommentRepo commentRepo;
 
     @Autowired
-    public CommentController(PostService postService, UserService userService, CommentsService commentsService) {
+    public CommentController(PostService postService, UserService userService, CommentsService commentsService, CommentRepo commentRepo) {
         this.postService = postService;
         this.userService = userService;
         this.commentsService = commentsService;
+        this.commentRepo = commentRepo;
     }
 
     @Secured("ROLE_USER")
     @GetMapping("/comment/{id}")
     public String showComment(@PathVariable Long id, Model model, Principal principal) {
-
-
         String authUsername = "anonymousUser";
         if (principal != null) {
             authUsername = principal.getName();
@@ -61,18 +61,60 @@ public class CommentController {
 
     @Secured("ROLE_USER")
     @PostMapping("/comment")
-    public String validateComment(@Valid @ModelAttribute Comment comment, BindingResult bindingResult, SessionStatus sessionStatus) {
+    public String validateComment(@Valid @ModelAttribute Comment comment, BindingResult bindingResult) {
         //System.err.println("POST comment: " + comment);
         if (bindingResult.hasErrors()) {
             //System.err.println("Comment did not validate");
             return "commentForm";
         } else {
             this.commentsService.save(comment);
-           // System.err.println("SAVE comment: " + comment);
-            sessionStatus.setComplete();
+
             return "redirect:/post/" + comment.getPost().getId();
         }
     }
 
-}
 
+    @GetMapping("/editComment/{commentId}")
+    public String editComment(@PathVariable Long commentId, Model model) {
+        model.addAttribute("commentId", commentId);
+        System.out.println("GAVAU COMMENTID"+ commentId);
+        var comment = commentRepo.getById(commentId);
+        model.addAttribute("editcomment", comment);
+        return "/editComment";
+    }
+
+    @PostMapping("/editComment/{commentId}")
+    public String editComment(@PathVariable Long commentId, @RequestParam(name = "body") String commentBody) {
+        commentsService.editComment(commentId, commentBody);
+
+        return "redirect:/home";
+    }
+
+    @Secured("ROLE_USER")
+    @GetMapping("/deleteComment/{id}")
+    public String deleteComment(@PathVariable Long id, Principal principal) {
+
+        String authUsername = "anonymousUser";
+        if (principal != null) {
+            authUsername = principal.getName();
+        }
+        Optional<Comment> optionalComment = this.commentsService.getById(id);
+
+        if (optionalComment.isPresent()) {
+            Comment comment = optionalComment.get();
+
+            if (authUsername.equals(comment.getUser().getUsername())) {
+
+                this.commentsService.delete(comment);
+
+                return "redirect:/home";
+
+            } else {
+                return "403";
+            }
+        } else {
+            return "error";
+        }
+    }
+
+}

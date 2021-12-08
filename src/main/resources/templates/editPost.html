@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="/fragments/head :: head"></head>
+<body>
+
+<div th:replace="/fragments/header :: header"></div>
+
+<div class="container">
+    <form th:action="'/editPost/'+${postId}"
+          method="post">
+        <h2>Edit Post</h2>
+        <div>
+            <label>
+
+                <input th:value="${editpost.getTitle()}" type="text" name="postTitle" placeholder="Title"/>
+            </label>
+        </div>
+        <div>
+            <label>
+
+                <textarea th:text="${editpost.getBody()}" name="postBody" placeholder="Write something valuable"></textarea>
+            </label>
+        </div>
+        <div class="float-left">
+            <button class="green-btn" type="submit">Send</button>
+        </div>
+    </form>
+    <div class="float-right" th:if="${postId}">
+        <a th:href="@{'/deletePost/{id}'(id=${postId})}">
+            <button class="green-btn red-btn" type="button">Delete Post</button>
+        </a>
+    </div>
+</div>
+
+
+<footer th:replace="/fragments/footer :: footer"></footer>
+
+</body>
+</html>

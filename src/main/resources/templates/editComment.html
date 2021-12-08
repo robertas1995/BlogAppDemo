@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en"    xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head th:replace="/fragments/head :: head"></head>
+<body>
+
+<div th:replace="/fragments/header :: header"></div>
+
+<div class="container">
+  <form th:action="'/editComment/'+${commentId}"
+        method="post">
+    <h2>EditComment</h2>
+    <div>
+    <label>
+      <textarea th:value="${editcomment.getBody()}" type="text" name="commentBody" placeholder="Write something valuable"></textarea>
+    </label>
+    </div>
+    <div>
+      <button class="green-btn" type="submit">Send</button>
+    </div>
+  </form>
+  <div class="float-right" th:if="${commentId}">
+    <a th:href="@{'/deleteComment/{id}'(id=${commentId})}">
+      <button class="red-btn" type="button"> DeleteComment</button>
+    </a>
+  </div>
+</div>
+
+<footer th:replace="/fragments/footer :: footer"></footer>
+
+</body>
+</html>

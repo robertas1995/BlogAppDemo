@@ -20,6 +20,7 @@ public interface PostRepo extends JpaRepository<Post, Long> {
     @Override
     Post save(Post post);
 
+
     void delete(Post post);
 
 

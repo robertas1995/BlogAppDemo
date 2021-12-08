@@ -2,8 +2,6 @@ package com.example.demo.service;
 
 import com.example.demo.model.Post;
 import com.example.demo.model.User;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 
@@ -23,6 +21,8 @@ public interface PostService {
 
     Post save(Post post);
 
+    Optional<Post> edit (Long id);
+
     void delete(Post post);
 
     String returnUsername(Principal principal);
@@ -33,4 +33,6 @@ public interface PostService {
     String createNewPost(Post post);
 
     String createNewPost(Post submitedPost, User user);
+
+    void editPost(Long postId, String postTitle, String postBody);
 }
